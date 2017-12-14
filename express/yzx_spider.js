@@ -3,7 +3,7 @@ var fs = require('fs');
 var cheerio = require('cheerio');
 var request = require('request');
 var i = 0;
-var url = "http://www.ss.pku.edu.cn/index.php/newscenter/news/2391"; 
+var url = "http://news.szu.edu.cn/info/1003/4853.htm"; 
 //初始url 
 
 function fetchPage(x) {     //封装了一层函数

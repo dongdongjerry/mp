@@ -1,3 +1,4 @@
+console.time("spider");
 var http = require('http');
 var fs = require('fs');
 var cheerio = require('cheerio');
@@ -43,7 +44,7 @@ let startRequest = x =>{
 };
 fetchPage(url);
 
-
+console.timeEnd("spider");
 
 
 
