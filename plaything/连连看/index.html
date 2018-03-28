@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 100px">
+<head>
+    <meta charset="UTF-8">
+    <title>连连看测试</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+</head>
+<body>
+<script>
+    //屏幕适应
+    (function (win, doc) {
+        if (!win.addEventListener) return;
+        var html = document.documentElement;
+        function setFont() {
+            var html = document.documentElement;
+            var k = 1136;
+            html.style.fontSize = html.clientWidth / k * 100 + "px";
+
+        }
+        setFont();
+        setTimeout(function () {
+            setFont();
+        }, 300);
+
+        win.addEventListener('resize', setFont, false);
+
+    })(window, document);
+    (function () {
+        // 设置canvas
+        var canvas = document.createElement('canvas');
+        var fontsize = +document.documentElement.style.fontSize.replace(/px/,'')
+        canvas.setAttribute('width',fontsize * 3 + 'px');
+        canvas.setAttribute('height',fontsize * 2 + 'px');
+        canvas.setAttribute('id','canvas');
+        document.body.appendChild(canvas);
+    })();
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+    function draw() {
+        var canvas = document.getElementById("canvas");
+        if (canvas.getContext) {
+            var ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = "rgb(200,0,0)";
+            ctx.fillRect (10, 10, 55, 50);
+
+            ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+            ctx.fillRect (30, 30, 55, 50);
+        }
+    }draw();
+</script>
+</body>
+</html>

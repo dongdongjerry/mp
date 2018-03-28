@@ -28,37 +28,20 @@ fetchPage(url);
 
 console.timeEnd("spider");
 
-
 (async function() {
     const instance = await phantom.create();
     const page = await instance.createPage();
     await page.on('onResourceRequested', function(requestData) {
-        console.info('Requesting', requestData.url);
+        // console.info('Requesting', requestData.url);
     });
-
-    const status = await page.open('https://s.taobao.com/search?q=%E5%B0%8F%E7%B1%B3&imgfile=&commend=all&ssid=s5-e&search_type=item&sourceId=tb.index&spm=a21bo.2017.201856-taobao-item.1&ie=utf8&initiative_id=tbindexz_20170306');
-    if (status !== 'success') {
-        console.log('访问失败');
-        return;
-    } else {
-        let start = Date.now();
-        let result = await page.evaluate(function() {
-            return document.title
-        });
-        let data = {
-            cose: 1,
-            msg: "抓取成功",
-            time: Date.now() - start,
-            dataList: result
-        }
-        console.log(JSON.stringify(data));
-        await instance.exit();
-    }
+    const status = await page.open('https://www.taobao.com/');
+    console.log(status)
+    await page.includeJs('https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js');
+    const content = await page.property('content');
+    let result = await page.evaluate(function () {
+       return $('img').length
+    });
+    console.log(result)
+    // console.log(content)
+    instance.exit();
 })();
-
-/*
-request({uri:url},function (err,response,body) {
-	var html = response.body;
-	var $ = cheerio.load(html);
-	console.log($(".news-details__title"));
-});*/
