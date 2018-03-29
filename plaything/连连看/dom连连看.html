@@ -39,18 +39,22 @@
 <script src="//ossweb-img.qq.com/images/js/jquery/jquery-1.9.1.min.js"></script>
 <script>
 (function () {
+    function start (){
 
-    
-    function countdown() {
-        var time = 60;
-        $('.time').text(time);
-        time--;
-        var setT = setTimeout('countdown',1000);
-        if (time<=0){
-            clearTimeout(setT);
-        }
     }
-    countdown();
+
+    function countDown (time) {
+        !time ? time=+time : time = 60;
+        var set = window.setInterval(function (){
+            $('.time').text(time);
+            time--;
+            if (time<0){
+                clearInterval(set);
+            }
+        },1000);
+    }
+
+
 
 
 })()
