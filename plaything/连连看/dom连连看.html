@@ -6,10 +6,56 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
     <style>
         .time{
-            width: .7rem;
-            height: .3rem;
+            width: .8rem;
+            padding: .1rem;
             font-size: .36rem;
-            margin: 1rem auto;
+            margin: .7rem auto .2rem;
+            background-color: #82AFFF;
+            text-align: center;
+        }
+        .curtain{
+            position: relative;
+            background-color: #666666;
+            width: 100%;
+            height: 80vh;
+        }
+        .card{
+            width: .5rem;
+            height: .8rem;
+            position: absolute;
+            background-color: #ba1809;
+        }
+        .card-01{top: .1rem;left: 0;}
+        .card-02{top: .1rem;left: 5%;}
+        .card-03{top: .1rem;left: 10%;}
+        .card-04{top: .1rem;left: 15%;}
+        .card-05{top: .1rem;left: 20%;}
+        .card-06{top: .1rem;left: 25%;}
+        .card-07{top: .1rem;left: 30%;}
+        .card-08{top: .1rem;left: 35%;}
+        .card-09{top: .1rem;left: 40%;}
+        .card-10{top: 1.2rem;left: 0%;}
+        .card-11{top: 1.2rem;left: 5%;}
+        .card-12{top: 1.2rem;left: 10%;}
+        .card-13{top: 1.2rem;left: 15%;}
+        .card-14{top: 1.2rem;left: 20%;}
+        .card-15{top: 1.2rem;left: 25%;}
+        .card-16{top: 1.2rem;left: 30%;}
+        .card-17{top: 1.2rem;left: 35%;}
+        .card-18{top: 1.2rem;left: 40%;}
+        .removeCard{
+            animation: remove 1s linear;
+        }
+        @keyframes remove{
+            0% {}
+            20% {transform: rotateY(180deg)}
+            40% {transform: rotateY(360deg)}
+            60% {transform: rotateY(180deg)}
+            80% {transform: rotateY(360deg)}
+            100% {opacity: 0}
+        }
+        .selected{
+            border: 1px solid #00B7FF;
         }
     </style>
 </head>
@@ -34,31 +80,122 @@
 
     })(window, document);
 </script>
-<div class="time"></div>
+<div class="time">0秒</div>
+<div class="curtain">
+    <div class="card card-01"></div>
+    <div class="card card-02"></div>
+    <div class="card card-03"></div>
+    <div class="card card-04"></div>
+    <div class="card card-05"></div>
+    <div class="card card-06"></div>
+    <div class="card card-07"></div>
+    <div class="card card-08"></div>
+    <div class="card card-09"></div>
+    <div class="card card-10"></div>
+    <div class="card card-11"></div>
+    <div class="card card-12"></div>
+    <div class="card card-13"></div>
+    <div class="card card-14"></div>
+    <div class="card card-15"></div>
+    <div class="card card-16"></div>
+    <div class="card card-17"></div>
+    <div class="card card-18"></div>
+</div>
 
 <script src="//ossweb-img.qq.com/images/js/jquery/jquery-1.9.1.min.js"></script>
 <script>
-(function () {
-    function start (){
-
-    }
-
-    function countDown (time) {
-        !time ? time=+time : time = 60;
+var game = {
+    time: 60, // 倒计时时间
+    img: ['red.img','blue.img','green.img','yellow.img','purple.img','pink.img','black.img','gray.img','tan'],
+    selectCard: [],
+    init() { // 初始化
+        this.time = 60;
+        this.countDown();
+        this.setCard();
+        clickCard();
+    },
+    end() {
+        unclickCard();
+    },
+    countDown() {// 计时器
+        var time = this.time;
+        var init = this.init;
         var set = window.setInterval(function (){
-            $('.time').text(time);
+            $('.time').text(time+'秒');
             time--;
             if (time<0){
                 clearInterval(set);
+                init();
             }
         },1000);
+    },
+    randomCard(arr,length) {// 随机打乱函数，length为需要返回的数组长度,默认为arr的长度
+        var reg = /^\d+$/;
+        if (!reg.test(length)) {
+             length = arr.length;
+        }
+        var random,t;
+        for (var i=0;i<arr.length;i++){
+            random = Math.floor(Math.random() * (i+1));
+            t = arr[random];
+            arr[random] = arr[i];
+            arr[i] = t;
+        }
+        return arr.slice(0,length)
+    },
+    setCard() {// 设置牌的位置
+        var img = this.randomCard(this.img);
+        console.log(img)
+        var $card = $('.card');
+        $card = this.randomCard($card,18);
+        img.forEach(function (item,index,arr) {
+            console.log(index)
+            var color = item.replace(/\Wimg/,'');
+            $card.eq(index).css({'background-color': color}).attr('data-name',color);
+            $card.eq($card.length-1-index).css({'background-color': color}).attr('data-name',color);
+        })
+    },
+    judgeCard() {// 判断选中的牌
+        if (this.selectCard.length === 2){
+            if (this.selectCard[0].attr('data-name') === this.selectCard[1].attr('data-name')){
+                this.selectCard.shift().hide('fast');
+                this.selectCard.shift().hide('fast');
+            }else {
+                this.selectCard.shift().removeClass('selected');
+            }
+        }
+    },
+    updateSelect(item) {//
+//        console.log(this.game)
+        this.selectCard.push(item);
+        this.judgeCard()
+    },
+    shiftSelected() {
+        this.selectCard.shift()
     }
 
 
-
-
-})()
-
+};
+game.countDown();
+game.setCard();
+function clickCard() {
+    $('.card').each(function (index) {
+        $(this).on('click',function () {
+            var $current = $(this);
+            if ($current.hasClass('selected')){
+                $current.removeClass('selected');
+                game.shiftSelected();
+            }else{
+                $current.addClass('selected');
+                game.updateSelect($current);
+            }
+        })
+    })
+}
+function unclickCard() {
+    $('.card').off('click');
+}
+clickCard()
 
 </script>
 </body>
