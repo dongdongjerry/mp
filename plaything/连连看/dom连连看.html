@@ -45,6 +45,7 @@
         .card-18{top: 1.2rem;left: 40%;}
         .removeCard{
             animation: remove 1s linear;
+            animation-fill-mode: forwards;
         }
         @keyframes remove{
             0% {}
@@ -80,6 +81,7 @@
 
     })(window, document);
 </script>
+<!--<button onclick="game.init()">开始</button>-->
 <div class="time">0秒</div>
 <div class="curtain">
     <div class="card card-01"></div>
@@ -176,15 +178,16 @@ var game = {
 
 
 };
-game.countDown();
-game.setCard();
+game.init()
 function clickCard() {
     $('.card').each(function (index) {
         $(this).on('click',function () {
             var $current = $(this);
+            console.log($current.hasClass('selected'))
             if ($current.hasClass('selected')){
                 $current.removeClass('selected');
                 game.shiftSelected();
+                console.log(index)
             }else{
                 $current.addClass('selected');
                 game.updateSelect($current);
