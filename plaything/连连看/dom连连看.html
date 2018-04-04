@@ -45,6 +45,7 @@
         .card-18{top: 1.2rem;left: 40%;}
         .removeCard{
             animation: remove 1s linear;
+            animation-fill-mode: forwards;
         }
         @keyframes remove{
             0% {}
@@ -80,6 +81,7 @@
 
     })(window, document);
 </script>
+<button onclick="game.init()">开始</button>
 <div class="time">0秒</div>
 <div class="curtain">
     <div class="card card-01"></div>
@@ -108,24 +110,25 @@ var game = {
     time: 60, // 倒计时时间
     img: ['red.img','blue.img','green.img','yellow.img','purple.img','pink.img','black.img','gray.img','tan'],
     selectCard: [],
+    grade: 0,
     init() { // 初始化
-        this.time = 60;
         this.countDown();
         this.setCard();
         clickCard();
+        resetCard();
     },
     end() {
         unclickCard();
     },
     countDown() {// 计时器
         var time = this.time;
-        var init = this.init;
+        var end = this.end;
         var set = window.setInterval(function (){
             $('.time').text(time+'秒');
             time--;
             if (time<0){
                 clearInterval(set);
-                init();
+                end();
             }
         },1000);
     },
@@ -145,11 +148,9 @@ var game = {
     },
     setCard() {// 设置牌的位置
         var img = this.randomCard(this.img);
-        console.log(img)
         var $card = $('.card');
         $card = this.randomCard($card,18);
         img.forEach(function (item,index,arr) {
-            console.log(index)
             var color = item.replace(/\Wimg/,'');
             $card.eq(index).css({'background-color': color}).attr('data-name',color);
             $card.eq($card.length-1-index).css({'background-color': color}).attr('data-name',color);
@@ -158,11 +159,18 @@ var game = {
     judgeCard() {// 判断选中的牌
         if (this.selectCard.length === 2){
             if (this.selectCard[0].attr('data-name') === this.selectCard[1].attr('data-name')){
-                this.selectCard.shift().hide('fast');
-                this.selectCard.shift().hide('fast');
+                this.selectCard.shift().addClass('removeCard').off('click');
+                this.selectCard.shift().addClass('removeCard').off('click');
+                this.countGrade();
             }else {
                 this.selectCard.shift().removeClass('selected');
             }
+        }
+    },
+    countGrade(){
+        this.grade++;
+        if (this.grade >= 9){
+            alert('win');
         }
     },
     updateSelect(item) {//
@@ -176,12 +184,12 @@ var game = {
 
 
 };
-game.countDown();
-game.setCard();
+game.init()
 function clickCard() {
     $('.card').each(function (index) {
         $(this).on('click',function () {
             var $current = $(this);
+            console.log(index)
             if ($current.hasClass('selected')){
                 $current.removeClass('selected');
                 game.shiftSelected();
@@ -192,10 +200,13 @@ function clickCard() {
         })
     })
 }
+function resetCard() {
+    $('.card').removeClass('removeCard').removeClass('selected');
+}
+
 function unclickCard() {
     $('.card').off('click');
 }
-clickCard()
 
 </script>
 </body>
